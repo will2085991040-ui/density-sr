@@ -1,0 +1,141 @@
+# =============================================================
+# DENSITY-SR / aiquant  .gitignore
+# 设计目标：保留 Python 源码、文档、项目说明；剔除 60GB+ 构建产物/数据
+# =============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+*.egg
+.eggs/
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# ---------- IDE / 编辑器 ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ---------- Office 临时文件 ----------
+~$*
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# ---------- 构建产物（PyInstaller / 历史 build 目录） ----------
+build/
+build_embed/
+build_qt/
+build_web/
+build_v2/
+build_v3/
+build_v4/
+build_v5/
+build_v6/
+build_v7/
+build_v8/
+build_v9/
+build_v91/
+build_v92/
+dist/
+dist_v2/
+dist_v3/
+dist_v4/
+dist_v5/
+dist_v6/
+dist_v7/
+dist_v8/
+dist_v9/
+dist_v91/
+dist_v92/
+dist_embed/
+dist_onf/
+dist_one/
+
+# EXE 产物（用户自行构建，不入库）
+*.exe
+
+# ---------- 归档与解压目录 ----------
+*.zip
+*.tar.gz
+*.tar
+*.tgz
+*.7z
+*.rar
+abu_extract/
+alphamaster_extract/
+detect_support_resistance_extract/
+
+# ---------- 数据目录（本地市场数据，不入库） ----------
+ashare_all4/
+ashare_combined/
+ashare_full/
+ashare_multi/
+ashare_real_data/
+ashare_stocks/
+ashare_tdx/
+
+# ---------- 日志与构建文本残留 ----------
+*.log
+*.txt
+api_verify.txt
+buildlog.txt
+build*_job.log
+deco_err.txt
+deco313.txt
+
+# ---------- aiquant 内置缓存与运行时数据 ----------
+# (模块内若生成 _data/ / cache/ / tmp/ 也会被忽略)
+_data/
+.cache/
+tmp/
+out/
+reports/
+
+# ---------- 用户本地配置（绝不入库） ----------
+# 真实 API Key / 端点 / 账号密码，仅留本机
+.env
+.env.local
+*.local.json
+config.local.json
+
+# 真实 AI 网关凭据（含真实 API Key，公开仓库绝不能上传）
+config/ai_gateway.json
+# 同目录放一个 .example 供他人参考
+!config/ai_gateway.example.json
+
+# ---------- 其他未在显式列表中、但仍属构建/数据杂项的目录 ----------
+dist_qt/
+dist_one/
+dist_onf/
+dist_embed/
+build_qt/
+build_web/
+build_embed/
+work_one/
+vnpy_extract/
+test_data/sample_large/
