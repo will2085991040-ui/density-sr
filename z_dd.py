@@ -1,0 +1,1 @@
+f="C:/Users/mine/Downloads/quant_research/aiquant/pa_llm.py"t=open(f,encoding="utf-8").read()t=t.replace("def def _prompt_files(stage):","def _prompt_files(stage):")open(f,"w",encoding="utf-8").write(t)import py_compilepy_compile.compile(f,doraise=True)print("fixed double def")

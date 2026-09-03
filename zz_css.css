@@ -1,0 +1,15 @@
+
+/* ---- 策略信号 + 市场情绪 卡片 ---- */
+.sig-card,.sent-card{margin-top:10px;padding:10px 12px;background:#0d1118;border:1px solid #223043;border-radius:8px}
+.sig-card .ai-head,.sent-card .ai-head{margin-bottom:6px}
+.sig-body,.sent-body{font-size:12.5px;line-height:1.6}
+.sent-kv{width:100%;border-collapse:collapse;font-size:12.5px}
+.sent-kv td{border:1px solid #223043;padding:3px 6px}
+.sent-kv td:nth-child(odd){color:#8fa0b3;width:64px}
+.sig-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sig-tag{display:inline-block;padding:2px 10px;border-radius:4px;font-weight:700;font-size:14px}
+.sig-tag.up{background:#1c3828;color:#3ecf8e}
+.sig-tag.down{background:#3a1d22;color:#ff7b8a}
+.sig-tag.flat{background:#2a3243;color:#c9d4e3}
+.hband{height:8px;border-radius:4px}
+.small{font-size:11px;color:#8f9cb0}

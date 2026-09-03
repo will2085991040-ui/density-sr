@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DENSITY·SR 支撑阻力引擎</title>
+<link rel="stylesheet" href="styles.css">
+<script src="echarts.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">DENSITY·SR</span>
+      <button class="rec" id="btn-rec">阿尔法量化价格行为</button>
+      <span class="tag">SUPPORT / RESISTANCE · TOUCH-HOLD ENGINE</span>
+    </div>
+    <div class="meta">
+      <div class="mi"><span class="k">HORIZON</span><span class="v">T+48</span></div>
+      <div class="mi"><span class="k">MODEL STATE</span><span class="v">CALIBRATED</span></div>
+      <div class="mi"><span class="k">EFFECTIVE PROBABILITY</span><span class="v">P<sub>eff</sub>=P(touch|x)·P(hold|touch,x)</span></div>
+    </div>
+  </header>
+  <section class="controls">
+    <div class="row">
+      <div class="group">
+        <span class="lbl">数据源</span>
+        <button id="btn-refresh" class="btn">获取最新实时数据</button>
+        <span class="path" id="data-path">LOCAL MARKET DATA / PARQUET ROOT · stocks</span>
+        <span class="count" id="data-count">品种数：0</span>
+      </div>
+    </div>
+    <div class="row selectors">
+      <label>MARKET/市场</label><select id="sel-market"><option selected>A股</option><option>指数</option><option>MT5</option><option>OKX</option></select>
+      <label>SYMBOL/标的</label><input id="sel-symbol" list="sym-list" placeholder="选择品种">
+      <datalist id="sym-list"></datalist>
+      <label>TIMEFRAME/周期</label><select id="sel-tf"><option selected>日线 (D1)</option><option>60分</option><option>15分</option></select>
+      <label>LOOKBACK/K线</label><select id="sel-lookback"><option>40</option><option selected>60</option><option>120</option><option>250</option></select>
+      <label>LEVEL COUNT</label><select id="sel-levels"><option>3</option><option selected>4</option><option>6</option></select>
+      <label>DIRECTION/方向</label><select id="sel-dir"><option selected>只做多</option><option>只做空</option><option>双向</option></select>
+      <button id="btn-analyze" class="btn-orange">分析单品种</button>
+      <button id="btn-scan" class="btn-orange">分析全部</button>
+      <button id="btn-all" class="btn">全部品种汇总</button>
+    </div>
+  </section>
+  <main class="content">
+    <div id="chart-pane">
+      <div class="chart-toolbar">
+        <div class="panel-title" id="chart-title" style="float:left">价格走势 · 支撑/阻力叠加</div>
+        <div class="ct-mode">
+          <button id="mode-min" class="ct-btn on">分时</button>
+          <button id="mode-k" class="ct-btn">K线</button>
+          <button id="mode-macd" class="ct-btn ct-tiny">MACD</button>
+          <button id="btn-rt-load" class="ct-btn ct-rt">刷新实时盘</button>
+          <button id="btn-help" class="ct-btn" title="使用说明 / 量化交易指南">? 使用说明</button>
+        </div>
+        <div style="clear:both"></div>
+      </div>
+      <div id="rt-meta" class="rt-meta"></div>
+      <div id="kline"></div>
+    </div>
+    <aside class="detail" id="detail-pane">
+      <div class="ticker-head"><span id="d-title">选择品种</span><span id="d-price" class="price">—</span><span id="d-chg" class="chg"></span></div>
+      <div id="d-summary" class="summary"></div>
+      <table class="bands" id="d-bands"><thead><tr><th>类型</th><th>中心价</th><th>带宽</th><th>距现价</th><th>触及</th><th>守住</th></tr></thead><tbody></tbody></table>
+      <div id="d-ohlc" class="ohlc"></div>
+      <div class="sig-card" id="sig-card">
+        <div class="ai-head"><span class="t">策略信号 · 自动量化建议</span><button id="btn-sig-refresh" class="btn mini">重算</button></div>
+        <div id="sig-body" class="sig-body"><span class="muted">载入品种后自动给出 方向/入场/止损/目标/风控 受市场情绪过滤</span></div>
+      </div>
+      <div class="sent-card" id="sent-card">
+        <div class="ai-head"><span class="t">市场情绪 · 量化择时</span><span id="sent-src" class="muted small"></span></div>
+        <div id="sent-body" class="sent-body"><span class="muted">今日市场温度/赚钱效应/涨跌结构</span></div>
+      </div>
+      <div class="ai-panel">
+        <div class="ai-head">
+          <span class="t">AI·联网研判</span>
+          <span class="live-dot" id="net-dot"></span><span id="net-tag">网络检测中</span>
+          <button id="btn-live" class="btn mini">实时报价</button>
+          <button id="btn-ai" class="btn-orange mini">AI K线分析</button>
+          <button id="btn-factor" class="btn mini">因子挖掘</button>
+        </div>
+        <div id="ai-result" class="ai-result"><span class="muted">点击按钮获取实时行情 / AI 概率研判 / 量化因子挖掘</span></div>
+      </div>
+      <div class="pa-panel">
+        <div class="pa-head">
+          <span class="t">双价格行为智能体</span>
+          <span class="pa-sub">PA_Agent · 大A量化监控系统</span>
+          <button id="btn-pa" class="btn-orange mini">运行双Agent研判</button>
+        </div>
+        <div class="pa-body" id="pa-body"><span class="muted">选择品种后点击「运行双Agent研判」→ 稳健(6.16) 与 激进(6.24) 同时给出生决策。</span></div>
+      </div>
+      <div class="pa-panel" style="margin-top:10px">
+        <div class="pa-head">
+          <span class="t">下跌宽通道 AI</span>
+          <span class="pa-sub">线性回归通道 · 宽度/斜率/位置</span>
+          <button id="btn-channel" class="btn-orange mini">下跌宽通道分析</button>
+        </div>
+        <div class="pa-body" id="ch-body"><span class="muted">选择品种后点击「下跌宽通道分析」→ 识别并解读下跌宽通道。</span></div>
+      </div>
+    </aside>
+  </main>
+  <section class="scan">
+    <div class="scan-head">
+      <span class="t">全样本扫描</span>
+      <input id="fltr" placeholder="筛选代码/趋势/方向">
+      <span class="pager" id="pager">显示 1-50 / 0</span>
+      <button id="btn-csv" class="btn">导出CSV</button>
+      <button id="btn-html" class="btn">导出HTML</button>
+    </div>
+    <div class="tbl-wrap"><table id="scan"><thead><tr>
+      <th>标的</th><th>现价</th><th>涨跌%</th><th>触及</th><th>守住</th><th>被测试</th><th>趋势</th><th>带宽</th><th>最近支撑</th><th>最近压力</th>
+    </tr></thead><tbody id="scan-body"></tbody></table></div>
+    <div class="scan-foot">点击表格行查看该品种详细分析 · 按有效概率(触及×守住)排序</div>
+  </section>
+</div>
+<script src="app.js"></script>
+  <script src="chart_interactive.js"></script>
+  <script src="chart_realtime.js"></script>
+  <script src="rt_monitor.js"></script>
+  <script src="sentiment_panel.js"></script>
+  <script src="channel_panel.js"></script>
+<script src="pa_llm_ui.js"></script>
+</body>
+</html>

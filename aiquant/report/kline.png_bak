@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+"""Feature 2 — interactive-ish self-contained HTML report.
+
+Generates a single standalone .html embedding base64 PNG charts:
+  - K-line + EMA/SR overlay + MACD subplot (candlestick, matplotlib)
+  - factor radar chart (趋势/动量/量能/价位/S/R/情绪)
+  - news word-cloud (matplotlib, optional)
+  - signal + strategy comparison tables
+Chinese font auto-selected (Windows SimHei/Microsoft YaHei if present).
+"""
+from __future__ import annotations
+import io, os, base64, datetime
+import numpy as np
+import pandas as pd
+
+def _cjk_font():
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    for f in ("Microsoft YaHei", "SimHei", "PingFang SC", "Noto Sans CJK SC"):
+        try:
+            from matplotlib import font_manager
+            if any(f.lower() in (x.name or "").lower() for x in font_manager.fontManager.ttflist):
+                plt.rcParams["font.sans-serif"] = [f]
+                plt.rcParams["axes.unicode_minus"] = False
+                return f
+        except Exception:
+            pass
+    return None
+
+def _b64(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=110, bbox_inches="tight")
+    plt_fig = fig
+    import matplotlib.pyplot as plt
+    plt.close(fig)
+    return base64.b64encode(buf.getvalue()).decode()
+
+def kline_macd_chart(df, title, tail=220):
+    """Return base64 PNG of candlestick+ema20 & MACD."""
+    import matplotlib.pyplot as plt
+    _tick = _cjk_font()
+    df = df.tail(tail).reset_index(drop=True)
+    x = df.index
+    from matplotlib import colors as mcolors
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(11, 6.2), sharex=False,
+                                    gridspec_kw={"height_ratios":[3.2,1]}, dpi=110)
+    # candlesticks
+    width = 0.6
+    up = df["close"] >= df["open"]
+    for i, row in df.iterrows():
+        col = "#d33" if row["close"] >= row["open"] else "#1a7f37"
+        ax1.vlines(i, row["low"], row["high"], color=col, linewidth=0.8)
+        lo = min(row["open"], row["close"]); hi = max(row["open"], row["close"])
+        ax1.bar(i, hi-lo, width, bottom=lo, color=col if row["close"]>=row["open"] else "none",
+                edgecolor=col, linewidth=0.8)
+    if "ema20" in df.columns:
+        ax1.plot(x, df["ema20"], color="#f5a623", linewidth=1.2, label="EMA20")
+    ax1.set_title(title, fontsize=11)
+    ax1.legend(loc="upper left", fontsize=8)
+    ax1.grid(alpha=0.2)
+    ax1.set_xlim(-0.6, len(df)+0.4)
+    if "macd" in df.columns and "macd_signal" in df.columns:
+        ax2.bar(range(len(df)), df["macd_hist"], color=["#d33a" if v>=0 else "#1a7f37" for v in df["macd_hist"]], width=0.6)
+        ax2.plot(x, df["macd"], color="#1167b1", linewidth=1, label="DIF")
+        ax2.plot(x, df["macd_signal"], color="#e8630a", linewidth=1, label="DEA")
+        ax2.legend(loc="upper left", fontsize=8); ax2.grid(alpha=0.3)
+    # sparse x labels
+    step = max(1, len(df)//10)
+    ax1.set_xticks(list(range(0, len(df), step)))
+    ax1.set_xticklabels([str(d)[:10] for d in df["date"].iloc[::step]] if "date" in df.columns else [], rotation=45, fontsize=7, ha="right")
+    return _b64_(fig)
+
+def _b64_(fig):
+    import matplotlib.pyplot as plt
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=110, bbox_inches="tight")
+    plt.close(fig)
+    return base64.b64encode(buf.getvalue()).decode()

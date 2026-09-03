@@ -1,0 +1,36 @@
+
+
+.ohlc{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.6}
+.ai-panel{margin-top:14px;border-top:1px solid var(--line);padding-top:8px}
+.ai-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.ai-head .t{color:var(--orange);font-weight:700;font-size:12px;letter-spacing:.5px}
+.ai-head .btn,.ai-head .btn-orange{margin:0;padding:3px 8px;font-size:11px}
+.btn{background:#2a3441;color:var(--txt);border:1px solid var(--line);padding:4px 10px;border-radius:4px;font-size:12px;cursor:pointer}
+.btn:hover{background:#33405240;border-color:#3b4a59}
+.btn-orange{background:var(--orange);color:#111;border:none;padding:5px 12px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer}
+.btn.mini,.btn-orange.mini{font-size:11px;padding:3px 8px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#555}
+.live-dot.on{background:#16c784;box-shadow:0 0 6px #16c784}
+#net-tag{font-size:10px;color:var(--dim)}
+.ai-result{font-size:12px;line-height:1.7;min-height:40px}
+.muted{color:var(--dim);font-size:11px}
+.up{color:var(--up)}.down{color:var(--down)}
+.live-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.qchip{background:#1c222e;border:1px solid var(--line);border-radius:4px;padding:2px 6px;font-size:11px}
+.sig{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.sig-label{color:var(--dim);font-size:11px}
+.sig-val{font-size:18px;font-weight:800}
+.conf{color:var(--orange);font-size:12px;font-weight:600}
+.fbars{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+.fbar{display:flex;align-items:center;gap:6px;font-size:11px}
+.fbar span{width:74px;color:var(--dim);text-align:left}
+.fbar .bar{flex:1;height:8px;background:#0d1117;border-radius:3px;overflow:hidden}
+.fbar .bar i{display:block;height:8px;background:linear-gradient(90deg,var(--orange2),var(--orange))}
+.fbar b{width:44px;text-align:right;color:var(--txt)}
+.fh{margin-bottom:6px;font-size:11px;color:var(--dim)}
+.frank-list{display:flex;flex-direction:column;gap:3px}
+.frank{display:flex;align-items:center;gap:6px;font-size:11px}
+.frank span{width:22px;color:var(--dim)}
+.frank b{width:80px}
+.frank i{display:block;height:10px;background:linear-gradient(90deg,var(--orange2),var(--orange));border-radius:2px}
+.frank em{color:var(--orange);font-style:normal;font-weight:600}

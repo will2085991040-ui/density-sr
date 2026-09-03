@@ -1,0 +1,4 @@
+curl.exe -s --max-time 20 -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36" -H "Referer: https://quote.eastmoney.com/" "https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=1.600519&fields1=f1,f2,f3,f4,f5,f6&fields2=f51,f52,f53,f54,f55,f56,f57&klt=101&fqt=1&end=20500101&lmt=120" -o "C:\Users\mine\Downloads\quant_research\em_test.json"
+"curl_exit=$LASTEXITCODE"
+(Get-Item "C:\Users\mine\Downloads\quant_research\em_test.json" -ErrorAction SilentlyContinue).Length
+Get-Content "C:\Users\mine\Downloads\quant_research\em_test.json" -Raw | ForEach-Object { $_.Substring(0, [Math]::Min(800,$_.Length)) }
